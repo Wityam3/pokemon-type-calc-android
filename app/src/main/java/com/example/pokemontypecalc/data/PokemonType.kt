@@ -15,7 +15,7 @@ enum class PokemonType(
     // Colors and names exact match with the 3-column screenshot provided
     NORMAL   ("一般",   Color(0xFF8B969C), R.drawable.ic_type_normal),
     FIGHTING ("格鬥",   Color(0xFFE87910), R.drawable.ic_type_fighting),
-    FLYING   ("飛",     Color(0xFF86B2E3), R.drawable.ic_type_flying), // Use "飛" instead of "飛行"
+    FLYING   ("飛行",     Color(0xFF86B2E3), R.drawable.ic_type_flying), // Use "飛" instead of "飛行"
     POISON   ("毒",     Color(0xFF903CCF), R.drawable.ic_type_poison),
     GROUND   ("地面",   Color(0xFF8F572A), R.drawable.ic_type_ground),
     ROCK     ("岩石",   Color(0xFFB5A170), R.drawable.ic_type_rock),

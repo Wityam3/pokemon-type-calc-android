@@ -76,7 +76,6 @@ object AppColors {
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    modifier: Modifier = Modifier,
     viewModel: TypeCalcViewModel = viewModel { TypeCalcViewModel() },
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
