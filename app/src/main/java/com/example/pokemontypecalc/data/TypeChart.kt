@@ -49,7 +49,7 @@ object TypeChart {
         /* PSY */ floatArrayOf(1f,  2f,  1f,  2f,  1f,  1f,  1f,  1f,  .5f, 1f,  1f,  1f,  1f,  .5f, 1f,  1f,  0f,  1f ),
         /* ICE */ floatArrayOf(1f,  1f,  2f,  1f,  2f,  1f,  1f,  1f,  .5f, .5f, .5f, 2f,  1f,  1f,  .5f, 2f,  1f,  1f ),
         /* DRA */ floatArrayOf(1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  .5f, 1f,  1f,  1f,  1f,  1f,  1f,  2f,  1f,  0f ),
-        /* DAR */ floatArrayOf(1f,  .5f, 1f,  1f,  1f,  1f,  1f,  2f,  .5f, 1f,  1f,  1f,  1f,  2f,  1f,  1f,  .5f, .5f),
+        /* DAR */ floatArrayOf(1f,  .5f, 1f,  1f,  1f,  1f,  1f,  2f,  1f,  1f,  1f,  1f,  1f,  2f,  1f,  1f,  .5f, .5f),
         /* FAI */ floatArrayOf(1f,  2f,  1f,  .5f, 1f,  1f,  1f,  1f,  .5f, .5f, 1f,  1f,  1f,  1f,  1f,  2f,  2f,  1f ),
     )
 
