@@ -66,6 +66,16 @@ fun MainScreen(
     viewModel: TypeCalcViewModel = viewModel { TypeCalcViewModel() },
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    androidx.compose.runtime.LaunchedEffect(state.mode) {
+        val color = if (state.mode == CalcMode.DEFENSE) android.graphics.Color.parseColor("#5A7CFF") else android.graphics.Color.parseColor("#F95A5A")
+        if (context is androidx.activity.ComponentActivity) {
+            context.enableEdgeToEdge(
+                statusBarStyle = androidx.activity.SystemBarStyle.dark(color),
+                navigationBarStyle = androidx.activity.SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+            )
+        }
+    }
 
     TypeCalcScreen(
         state = state,

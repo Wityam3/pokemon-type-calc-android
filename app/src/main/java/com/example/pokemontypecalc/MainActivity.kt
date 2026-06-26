@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 
     enableEdgeToEdge(
-      statusBarStyle = androidx.activity.SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+      statusBarStyle = androidx.activity.SystemBarStyle.dark(android.graphics.Color.parseColor("#F95A5A")) // Default to Attack mode color,
       navigationBarStyle = androidx.activity.SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
     )
     setContent {
