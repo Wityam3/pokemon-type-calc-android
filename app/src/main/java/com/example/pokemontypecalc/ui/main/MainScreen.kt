@@ -170,7 +170,7 @@ private fun HeaderBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(if (mode == CalcMode.DEFENSE) Color(0xFF5A7CFF) else Color(0xFFF95A5A))
+            .background(Color(0xFF555555))
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
