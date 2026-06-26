@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 毒 Poison: 骷髏頭符號 / Skull/poison symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12c0,3.03 1.36,5.74 3.5,7.56V22h3v-2.09c0.47,0.06 0.95,0.09 1.44,0.09h2.12c0.49,0 0.97,-0.03 1.44,-0.09V22h3v-2.44C18.64,17.74 20,15.03 20,12c0,-5.52 -4.48,-10 -10,-10zM9,14c-1.1,0 -2,-0.9 -2,-2s0.9,-2 2,-2 2,0.9 2,2 -0.9,2 -2,2zM15,14c-1.1,0 -2,-0.9 -2,-2s0.9,-2 2,-2 2,0.9 2,2 -0.9,2 -2,2z"/>
+</vector>

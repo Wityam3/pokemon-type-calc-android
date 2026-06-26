@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 龍 Dragon: 龍牙/龍火符號 / Dragon fang symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6.5,2C4.01,2 2,4.01 2,6.5c0,1.77 1.03,3.3 2.52,4.03C4.19,11.16 4,11.82 4,12.5c0,1.41 0.74,2.65 1.85,3.35C5.33,16.54 5,17.48 5,18.5C5,20.99 7.01,23 9.5,23c1.77,0 3.3,-1.03 4.03,-2.52C14.16,20.81 14.82,21 15.5,21c1.41,0 2.65,-0.74 3.35,-1.85C19.54,19.67 20.48,20 21.5,20c2.49,0 4.5,-2.01 4.5,-4.5c0,-1.77 -1.03,-3.3 -2.52,-4.03C23.81,10.84 24,10.18 24,9.5c0,-1.41 -0.74,-2.65 -1.85,-3.35C22.67,5.46 23,4.52 23,3.5C23,1.01 20.99,-1 18.5,-1"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9.5,9L7,14l5,-2 5,2L14.5,9 17,5H7z"/>
+</vector>

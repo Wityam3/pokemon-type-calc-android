@@ -1,0 +1,470 @@
+package com.example.pokemontypecalc.ui.main
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
+import com.example.pokemontypecalc.R
+import com.example.pokemontypecalc.data.PokemonType
+import com.example.pokemontypecalc.data.TypeChart
+import com.example.pokemontypecalc.theme.PokemonTypeCalcTheme
+
+/**
+ * 寶可夢屬性相剋 APP 主畫面（與 Navigation 整合）
+ * Pokémon Type Effectiveness Calculator Main Screen (Navigation integration)
+ */
+@Composable
+fun MainScreen(
+    onItemClick: (NavKey) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: TypeCalcViewModel = viewModel { TypeCalcViewModel() },
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    TypeCalcScreen(
+        state = state,
+        onModeSwitch = viewModel::switchMode,
+        onTypeClick = viewModel::onTypeClick,
+        onReset = viewModel::reset,
+    )
+}
+
+/**
+ * 主畫面內容（純 UI，可預覽）
+ * Main screen content (pure UI, previewable)
+ */
+@Composable
+fun TypeCalcScreen(
+    state: TypeCalcUiState,
+    onModeSwitch: (CalcMode) -> Unit,
+    onTypeClick: (PokemonType) -> Unit,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFEEEEEE))
+    ) {
+        // ===== 頂部標題列 / Header Bar =====
+        HeaderBar(
+            mode = state.mode,
+            onReset = onReset
+        )
+
+        // ===== 屬性按鈕 + 結果區（可捲動）/ Type buttons + results (scrollable) =====
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 6.dp,
+                end = 6.dp,
+                top = 6.dp,
+                bottom = 24.dp
+            )
+        ) {
+            // 屬性按鈕網格 / Type button grid
+            item {
+                TypeButtonGrid(
+                    types = PokemonType.displayOrder,
+                    isTypeSelected = state::isTypeSelected,
+                    onTypeClick = onTypeClick
+                )
+            }
+
+            // 模式切換標籤 / Mode switch tab
+            item {
+                ModeSwitchBar(
+                    mode = state.mode,
+                    onModeSwitch = onModeSwitch
+                )
+            }
+
+            // 結果區 / Results area
+            if (!state.hasSelection) {
+                item {
+                    PlaceholderText(mode = state.mode)
+                }
+            } else {
+                val sortedResults = TypeChart.multiplierOrder
+                    .filter { state.results.containsKey(it) }
+                    .map { it to (state.results[it] ?: emptyList()) }
+
+                if (sortedResults.isEmpty()) {
+                    item {
+                        Text(
+                            text = "所有屬性倍率皆為 1×",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    }
+                } else {
+                    items(sortedResults) { (multiplier, types) ->
+                        ResultRow(
+                            multiplier = multiplier,
+                            types = types
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ===== 頂部標題列 / Header Bar =====
+@Composable
+private fun HeaderBar(
+    mode: CalcMode,
+    onReset: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFF555555))
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 左側空白保持標題居中 / Left spacer for centering
+        Spacer(modifier = Modifier.width(36.dp))
+
+        // 標題 / Title
+        Text(
+            text = if (mode == CalcMode.DEFENSE) "防禦方" else "攻擊方",
+            modifier = Modifier.weight(1f),
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        // 重置按鈕 / Reset button
+        Icon(
+            painter = painterResource(id = R.drawable.ic_reset),
+            contentDescription = "重置",
+            tint = Color.White,
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onReset() }
+        )
+    }
+}
+
+// ===== 屬性按鈕網格 / Type Button Grid =====
+@Composable
+private fun TypeButtonGrid(
+    types: List<PokemonType>,
+    isTypeSelected: (PokemonType) -> Boolean,
+    onTypeClick: (PokemonType) -> Unit
+) {
+    // 手動排列成 3 欄 / Manually layout in 3 columns
+    val rows = types.chunked(3)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        rows.forEach { rowTypes ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                rowTypes.forEach { type ->
+                    TypeButton(
+                        type = type,
+                        isSelected = isTypeSelected(type),
+                        onClick = { onTypeClick(type) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ===== 單一屬性按鈕（平面化設計）/ Single Type Button (flat design) =====
+@Composable
+private fun TypeButton(
+    type: PokemonType,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(6.dp)
+    val textColor = if (type.color.luminance() > 0.5f) Color(0xFF333333) else Color.White
+
+    Row(
+        modifier = modifier
+            .height(52.dp)
+            .then(
+                if (isSelected) {
+                    Modifier.border(3.dp, Color(0xFF333333), shape)
+                } else {
+                    Modifier
+                }
+            )
+            .clip(shape)
+            .background(type.color)
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        // 屬性圖示 / Type icon
+        Icon(
+            painter = painterResource(id = getTypeIconRes(type)),
+            contentDescription = type.displayName,
+            tint = textColor,
+            modifier = Modifier.size(22.dp)
+        )
+
+        Spacer(modifier = Modifier.width(6.dp))
+
+        // 屬性名稱 / Type name
+        Text(
+            text = type.displayName,
+            color = textColor,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ===== 模式切換標籤 / Mode Switch Bar =====
+@Composable
+private fun ModeSwitchBar(
+    mode: CalcMode,
+    onModeSwitch: (CalcMode) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+    ) {
+        // 防禦方按鈕 / Defense tab
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(
+                    if (mode == CalcMode.DEFENSE) Color(0xFF555555)
+                    else Color(0xFFAAAAAA)
+                )
+                .clickable { onModeSwitch(CalcMode.DEFENSE) }
+                .padding(vertical = 10.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "防禦方",
+                color = Color.White,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // 攻擊方按鈕 / Attack tab
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(
+                    if (mode == CalcMode.ATTACK) Color(0xFFEE4466)
+                    else Color(0xFFAAAAAA)
+                )
+                .clickable { onModeSwitch(CalcMode.ATTACK) }
+                .padding(vertical = 10.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "攻擊方",
+                color = Color.White,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+// ===== 佔位文字 / Placeholder Text =====
+@Composable
+private fun PlaceholderText(mode: CalcMode) {
+    Text(
+        text = if (mode == CalcMode.DEFENSE) {
+            "請選擇防禦方寶可夢的屬性"
+        } else {
+            "請選擇攻擊方寶可夢的屬性"
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 48.dp),
+        textAlign = TextAlign.Center,
+        color = Color(0xFF888888),
+        fontSize = 15.sp
+    )
+}
+
+// ===== 結果行 / Result Row =====
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ResultRow(
+    multiplier: Float,
+    types: List<PokemonType>
+) {
+    val label = TypeChart.multiplierLabel(multiplier)
+    val labelColor = when {
+        multiplier >= 2f  -> Color(0xFFCC3333)
+        multiplier == 0f  -> Color(0xFF666666)
+        else              -> Color(0xFF3366AA)
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        // 分隔線 / Divider
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color(0xFFCCCCCC))
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 8.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            // 倍率文字 / Multiplier label
+            Text(
+                text = label,
+                color = labelColor,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+                modifier = Modifier
+                    .width(56.dp)
+                    .padding(top = 2.dp)
+            )
+
+            // 屬性標籤流式排列（使用內建 FlowRow）
+            // Type tags in flow layout (using built-in FlowRow)
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                types.forEach { type ->
+                    TypeTag(type = type)
+                }
+            }
+        }
+    }
+}
+
+// ===== 屬性標籤（結果區用）/ Type Tag (for results area) =====
+@Composable
+private fun TypeTag(type: PokemonType) {
+    val textColor = if (type.color.luminance() > 0.5f) Color(0xFF333333) else Color.White
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(type.color)
+            .padding(horizontal = 12.dp, vertical = 5.dp)
+    ) {
+        Text(
+            text = type.displayName,
+            color = textColor,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ===== 取得屬性圖示資源 ID / Get type icon resource ID =====
+private fun getTypeIconRes(type: PokemonType): Int {
+    return when (type) {
+        PokemonType.NORMAL   -> R.drawable.ic_type_normal
+        PokemonType.FIRE     -> R.drawable.ic_type_fire
+        PokemonType.WATER    -> R.drawable.ic_type_water
+        PokemonType.GRASS    -> R.drawable.ic_type_grass
+        PokemonType.ELECTRIC -> R.drawable.ic_type_electric
+        PokemonType.ICE      -> R.drawable.ic_type_ice
+        PokemonType.FIGHTING -> R.drawable.ic_type_fighting
+        PokemonType.POISON   -> R.drawable.ic_type_poison
+        PokemonType.GROUND   -> R.drawable.ic_type_ground
+        PokemonType.FLYING   -> R.drawable.ic_type_flying
+        PokemonType.PSYCHIC  -> R.drawable.ic_type_psychic
+        PokemonType.BUG      -> R.drawable.ic_type_bug
+        PokemonType.ROCK     -> R.drawable.ic_type_rock
+        PokemonType.GHOST    -> R.drawable.ic_type_ghost
+        PokemonType.DRAGON   -> R.drawable.ic_type_dragon
+        PokemonType.DARK     -> R.drawable.ic_type_dark
+        PokemonType.STEEL    -> R.drawable.ic_type_steel
+        PokemonType.FAIRY    -> R.drawable.ic_type_fairy
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 720)
+@Composable
+fun TypeCalcScreenPreview() {
+    PokemonTypeCalcTheme {
+        TypeCalcScreen(
+            state = TypeCalcUiState(),
+            onModeSwitch = {},
+            onTypeClick = {},
+            onReset = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 720)
+@Composable
+fun TypeCalcScreenSelectedPreview() {
+    val state = TypeCalcUiState(
+        mode = CalcMode.DEFENSE,
+        selectedDefenseTypes = listOf(PokemonType.FIGHTING, PokemonType.GROUND),
+        results = TypeChart.getDefenseResults(listOf(PokemonType.FIGHTING, PokemonType.GROUND))
+    )
+    PokemonTypeCalcTheme {
+        TypeCalcScreen(
+            state = state,
+            onModeSwitch = {},
+            onTypeClick = {},
+            onReset = {}
+        )
+    }
+}
