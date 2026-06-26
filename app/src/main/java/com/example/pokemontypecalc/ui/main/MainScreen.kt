@@ -164,7 +164,7 @@ private fun HeaderBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF555555))
+            .background(if (mode == CalcMode.DEFENSE) Color(0xFF5A7CFF) else Color(0xFFF95A5A))
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -303,7 +303,7 @@ private fun ModeSwitchBar(
                 .weight(1f)
                 .clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .background(
-                    if (mode == CalcMode.DEFENSE) Color(0xFF555555)
+                    if (mode == CalcMode.DEFENSE) Color(0xFF5A7CFF)
                     else Color(0xFFAAAAAA)
                 )
                 .clickable { onModeSwitch(CalcMode.DEFENSE) }
@@ -324,7 +324,7 @@ private fun ModeSwitchBar(
                 .weight(1f)
                 .clip(RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
                 .background(
-                    if (mode == CalcMode.ATTACK) Color(0xFFEE4466)
+                    if (mode == CalcMode.ATTACK) Color(0xFFF95A5A)
                     else Color(0xFFAAAAAA)
                 )
                 .clickable { onModeSwitch(CalcMode.ATTACK) }
