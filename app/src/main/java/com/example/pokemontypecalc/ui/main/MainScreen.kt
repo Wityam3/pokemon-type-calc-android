@@ -237,7 +237,7 @@ private fun TypeButton(
 
     // 動態計算縮放與陰影 / Animate scale and elevation
     val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.08f else 1.0f,
+        targetValue = if (isSelected) 1.04f else 1.0f, // 稍微縮小縮放比例以避免碰撞 / Reduced scale to avoid collision
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
         label = "scale"
     )
@@ -252,6 +252,13 @@ private fun TypeButton(
             .zIndex(if (isSelected) 1f else 0f) // 確保選取的按鈕會浮在其他按鈕上方
             .scale(scale)
             .shadow(elevation = elevation.dp, shape = shape)
+            .then(
+                if (isSelected) {
+                    Modifier.border(3.dp, Color(0xFF333333), shape) // 保留原本的黑框 / Keep the black border
+                } else {
+                    Modifier
+                }
+            )
             .clip(shape)
             .background(type.color)
             .clickable { onClick() }
