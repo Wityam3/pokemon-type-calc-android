@@ -1,5 +1,8 @@
 package com.example.pokemontypecalc.ui.main
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
@@ -36,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
@@ -229,16 +235,23 @@ private fun TypeButton(
     val shape = RoundedCornerShape(6.dp)
     val textColor = Color.White // Text is white for all buttons in the new reference image
 
+    // 動態計算縮放與陰影 / Animate scale and elevation
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.08f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "scale"
+    )
+    val elevation by animateFloatAsState(
+        targetValue = if (isSelected) 12f else 0f,
+        label = "elevation"
+    )
+
     Row(
         modifier = modifier
             .height(52.dp)
-            .then(
-                if (isSelected) {
-                    Modifier.border(3.dp, Color(0xFF333333), shape)
-                } else {
-                    Modifier
-                }
-            )
+            .zIndex(if (isSelected) 1f else 0f) // 確保選取的按鈕會浮在其他按鈕上方
+            .scale(scale)
+            .shadow(elevation = elevation.dp, shape = shape)
             .clip(shape)
             .background(type.color)
             .clickable { onClick() }
