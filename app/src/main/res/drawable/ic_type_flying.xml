@@ -1,10 +1,1 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- 飛 Flying: 羽毛符號 / Feather/wing symbol -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M20.45,6.55c-0.47,-0.47 -1.08,-0.75 -1.74,-0.79l-0.58,-0.03 -0.06,-0.57c-0.04,-0.51 -0.23,-1.0 -0.56,-1.41L15.67,1.5l-1.45,1.45 0.86,1.0C14.38,4.78 13.27,5.91 12,7.11L3.22,15.89c-0.39,0.39 -0.39,1.02 0,1.41l3.47,3.47c0.39,0.39 1.02,0.39 1.41,0L17,12c1.2,-1.27 2.33,-2.38 3.16,-3.08l0.89,0.86 1.45,-1.45L20.75,6.78c-0.02,-0.1 -0.16,-0.09 -0.3,-0.23z"/>
-</vector>
+﻿<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#FFFFFF" android:pathData="M2.84,18.42C2.84,18.42 5.09,16.59 7.64,15.74L8.79,16.89C8.79,16.89 6.27,18.32 4.98,20.57L2.84,18.42ZM22,2L12.92,11.08C11.51,10.66 9.87,11.16 8.89,12.14C7.62,13.41 7.62,15.48 8.89,16.75L12.42,13.22L13.13,13.93L9.6,17.46C10.87,18.73 12.94,18.73 14.21,17.46C15.19,16.48 15.69,14.84 15.27,13.43L22,6.71V2Z"/></vector>

@@ -227,7 +227,7 @@ private fun TypeButton(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(6.dp)
-    val textColor = if (type.color.luminance() > 0.5f) Color(0xFF333333) else Color.White
+    val textColor = Color.White // Text is white for all buttons in the new reference image
 
     Row(
         modifier = modifier
@@ -244,17 +244,17 @@ private fun TypeButton(
             .clickable { onClick() }
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start // 置左對齊
     ) {
         // 屬性圖示 / Type icon
         Icon(
             painter = painterResource(id = getTypeIconRes(type)),
             contentDescription = type.displayName,
             tint = textColor,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(20.dp)
         )
 
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         // 屬性名稱 / Type name
         Text(
