@@ -55,13 +55,27 @@ import com.example.pokemontypecalc.data.PokemonType
 import com.example.pokemontypecalc.data.TypeChart
 import com.example.pokemontypecalc.theme.PokemonTypeCalcTheme
 
+object AppColors {
+    val Background = Color(0xFFEEEEEE)
+    val Header = Color(0xFF555555)
+    val DefenseTab = Color(0xFF5A7CFF)
+    val AttackTab = Color(0xFFF95A5A)
+    val TabUnselected = Color(0xFFAAAAAA)
+    val Placeholder = Color(0xFF888888)
+    val Divider = Color(0xFFCCCCCC)
+    val ResultSuperEffective = Color(0xFFCC3333)
+    val ResultNotEffective = Color(0xFF3366AA)
+    val ResultNoEffect = Color(0xFF666666)
+    val ButtonBorder = Color(0xFF333333)
+}
+
 /**
- * 寶可夢屬性相剋 APP 主畫面（與 Navigation 整合）
- * Pokémon Type Effectiveness Calculator Main Screen (Navigation integration)
+ * 寶可夢屬性相剋 APP 主畫面
+ * Pokémon Type Effectiveness Calculator Main Screen
  */
 @Composable
 fun MainScreen(
-    onItemClick: (NavKey) -> Unit,
+    modifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
     viewModel: TypeCalcViewModel = viewModel { TypeCalcViewModel() },
 ) {
@@ -91,7 +105,7 @@ fun TypeCalcScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEEEEEE))
+            .background(AppColors.Background)
     ) {
         // ===== 頂部標題列 / Header Bar =====
         HeaderBar(
@@ -170,7 +184,7 @@ private fun HeaderBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF555555))
+            .background(AppColors.Header)
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -260,7 +274,7 @@ private fun TypeButton(
             .shadow(elevation = elevation.dp, shape = shape)
             .then(
                 if (isSelected) {
-                    Modifier.border(3.dp, Color(0xFF333333), shape) // 保留原本的黑框 / Keep the black border
+                    Modifier.border(3.dp, AppColors.ButtonBorder, shape) // 保留原本的黑框 / Keep the black border
                 } else {
                     Modifier
                 }
@@ -274,7 +288,7 @@ private fun TypeButton(
     ) {
         // 屬性圖示 / Type icon
         Icon(
-            painter = painterResource(id = getTypeIconRes(type)),
+            painter = painterResource(id = type.iconResId),
             contentDescription = type.displayName,
             tint = textColor,
             modifier = Modifier.size(20.dp)
@@ -309,8 +323,8 @@ private fun ModeSwitchBar(
                 .weight(1f)
                 .clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .background(
-                    if (mode == CalcMode.DEFENSE) Color(0xFF5A7CFF)
-                    else Color(0xFFAAAAAA)
+                    if (mode == CalcMode.DEFENSE) AppColors.DefenseTab
+                    else AppColors.TabUnselected
                 )
                 .clickable { onModeSwitch(CalcMode.DEFENSE) }
                 .padding(vertical = 10.dp),
@@ -330,8 +344,8 @@ private fun ModeSwitchBar(
                 .weight(1f)
                 .clip(RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
                 .background(
-                    if (mode == CalcMode.ATTACK) Color(0xFFF95A5A)
-                    else Color(0xFFAAAAAA)
+                    if (mode == CalcMode.ATTACK) AppColors.AttackTab
+                    else AppColors.TabUnselected
                 )
                 .clickable { onModeSwitch(CalcMode.ATTACK) }
                 .padding(vertical = 10.dp),
@@ -360,7 +374,7 @@ private fun PlaceholderText(mode: CalcMode) {
             .fillMaxWidth()
             .padding(vertical = 48.dp),
         textAlign = TextAlign.Center,
-        color = Color(0xFF888888),
+        color = AppColors.Placeholder,
         fontSize = 15.sp
     )
 }
@@ -374,9 +388,9 @@ private fun ResultRow(
 ) {
     val label = TypeChart.multiplierLabel(multiplier)
     val labelColor = when {
-        multiplier >= 2f  -> Color(0xFFCC3333)
-        multiplier == 0f  -> Color(0xFF666666)
-        else              -> Color(0xFF3366AA)
+        multiplier >= 2f  -> AppColors.ResultSuperEffective
+        multiplier == 0f  -> AppColors.ResultNoEffect
+        else              -> AppColors.ResultNotEffective
     }
 
     Column(
@@ -387,7 +401,7 @@ private fun ResultRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color(0xFFCCCCCC))
+                .background(AppColors.Divider)
         )
 
         Row(
@@ -436,7 +450,7 @@ private fun TypeTag(type: PokemonType) {
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(id = getTypeIconRes(type)),
+            painter = painterResource(id = type.iconResId),
             contentDescription = null,
             tint = contentColor,
             modifier = Modifier.size(14.dp)
@@ -453,29 +467,6 @@ private fun TypeTag(type: PokemonType) {
     }
 }
 
-// ===== 取得屬性圖示資源 ID / Get type icon resource ID =====
-private fun getTypeIconRes(type: PokemonType): Int {
-    return when (type) {
-        PokemonType.NORMAL   -> R.drawable.ic_type_normal
-        PokemonType.FIRE     -> R.drawable.ic_type_fire
-        PokemonType.WATER    -> R.drawable.ic_type_water
-        PokemonType.GRASS    -> R.drawable.ic_type_grass
-        PokemonType.ELECTRIC -> R.drawable.ic_type_electric
-        PokemonType.ICE      -> R.drawable.ic_type_ice
-        PokemonType.FIGHTING -> R.drawable.ic_type_fighting
-        PokemonType.POISON   -> R.drawable.ic_type_poison
-        PokemonType.GROUND   -> R.drawable.ic_type_ground
-        PokemonType.FLYING   -> R.drawable.ic_type_flying
-        PokemonType.PSYCHIC  -> R.drawable.ic_type_psychic
-        PokemonType.BUG      -> R.drawable.ic_type_bug
-        PokemonType.ROCK     -> R.drawable.ic_type_rock
-        PokemonType.GHOST    -> R.drawable.ic_type_ghost
-        PokemonType.DRAGON   -> R.drawable.ic_type_dragon
-        PokemonType.DARK     -> R.drawable.ic_type_dark
-        PokemonType.STEEL    -> R.drawable.ic_type_steel
-        PokemonType.FAIRY    -> R.drawable.ic_type_fairy
-    }
-}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
