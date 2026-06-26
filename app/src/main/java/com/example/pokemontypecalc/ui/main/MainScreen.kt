@@ -97,20 +97,20 @@ fun TypeCalcScreen(
                 bottom = 24.dp
             )
         ) {
+            // 模式切換標籤移到上方 / Mode switch tab moved to top
+            item {
+                ModeSwitchBar(
+                    mode = state.mode,
+                    onModeSwitch = onModeSwitch
+                )
+            }
+
             // 屬性按鈕網格 / Type button grid
             item {
                 TypeButtonGrid(
                     types = PokemonType.displayOrder,
                     isTypeSelected = state::isTypeSelected,
                     onTypeClick = onTypeClick
-                )
-            }
-
-            // 模式切換標籤 / Mode switch tab
-            item {
-                ModeSwitchBar(
-                    mode = state.mode,
-                    onModeSwitch = onModeSwitch
                 )
             }
 
@@ -275,12 +275,13 @@ private fun ModeSwitchBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
+            .padding(bottom = 16.dp)
     ) {
         // 防禦方按鈕 / Defense tab
         Box(
             modifier = Modifier
                 .weight(1f)
+                .clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .background(
                     if (mode == CalcMode.DEFENSE) Color(0xFF555555)
                     else Color(0xFFAAAAAA)
@@ -301,6 +302,7 @@ private fun ModeSwitchBar(
         Box(
             modifier = Modifier
                 .weight(1f)
+                .clip(RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
                 .background(
                     if (mode == CalcMode.ATTACK) Color(0xFFEE4466)
                     else Color(0xFFAAAAAA)
