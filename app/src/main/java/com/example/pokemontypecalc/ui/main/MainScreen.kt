@@ -419,17 +419,28 @@ private fun ResultRow(
 // ===== 屬性標籤（結果區用）/ Type Tag (for results area) =====
 @Composable
 private fun TypeTag(type: PokemonType) {
-    val textColor = if (type.color.luminance() > 0.5f) Color(0xFF333333) else Color.White
+    val contentColor = if (type.color.luminance() > 0.5f) Color(0xFF333333) else Color.White
 
-    Box(
+    Row(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
             .background(type.color)
-            .padding(horizontal = 12.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
+        Icon(
+            painter = painterResource(id = getTypeIconRes(type)),
+            contentDescription = null,
+            tint = contentColor,
+            modifier = Modifier.size(14.dp)
+        )
+        
+        Spacer(modifier = Modifier.width(6.dp))
+
         Text(
             text = type.displayName,
-            color = textColor,
+            color = contentColor,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
         )
